@@ -67,4 +67,30 @@ const findInvalidCards = (arrArr) => {
   // console.log(arrArr);
   return invalidCards;
 };
-findInvalidCards(batch);
+const idInvalidCardCompanies = (arrArr) => {
+  let companyNames = [];
+
+  arrArr.forEach((arr) => {
+    switch (arr[0]) {
+      case 3:
+        companyNames.push("Amex (American Express)");
+        break;
+      case 4:
+        companyNames.push("Visa");
+        break;
+      case 5:
+        companyNames.push("Mastercard");
+        break;
+      case 6:
+        companyNames.push("Discover");
+        break;
+      default:
+        companyNames.push("Company not found");
+    }
+  });
+  companyNames = Array.from(new Set(companyNames));
+  return companyNames;
+};
+
+const invalidCompanies = idInvalidCardCompanies(findInvalidCards(batch));
+console.log(invalidCompanies);
