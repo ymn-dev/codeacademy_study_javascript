@@ -92,5 +92,11 @@ const idInvalidCardCompanies = (arrArr) => {
   return companyNames;
 };
 
-const invalidCompanies = idInvalidCardCompanies(findInvalidCards(batch));
-console.log(invalidCompanies);
+// const invalidCompanies = idInvalidCardCompanies(findInvalidCards(batch));
+// console.log(invalidCompanies);
+
+const visaStrToNumArr = (input) => {
+  return input.split("").map(Number);
+};
+const generatedVisa1 = visaStrToNumArr("6011594685943702655");
+console.log(generatedVisa1);
