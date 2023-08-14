@@ -98,5 +98,34 @@ const idInvalidCardCompanies = (arrArr) => {
 const visaStrToNumArr = (input) => {
   return input.split("").map(Number);
 };
-const generatedVisa1 = visaStrToNumArr("6011594685943702655");
-console.log(generatedVisa1);
+// const generatedVisa1 = visaStrToNumArr("6011594685943702655");
+// console.log(generatedVisa1);
+const validatingInvalidatedCard = (arr) => {
+  let checkLuhn = arr.map((a) => a);
+  let doLhun = true;
+  for (let i = checkLuhn.length - 1 - 1; i >= 0; i--) {
+    if (doLhun) {
+      checkLuhn[i] *= 2;
+      if (checkLuhn[i] > 9) {
+        checkLuhn[i] -= 9;
+      }
+      doLhun = false;
+    } else {
+      doLhun = true;
+    }
+  }
+  let modCheck = checkLuhn.reduce((sum, item) => sum + item);
+  let fixThisNum = arr.pop();
+  // console.log("pre fix = "+fixThisNum);
+  fixThisNum = (fixThisNum + (10 - (modCheck % 10))) % 10;
+  // console.log("fix = "+fixThisNum);
+  arr.push(fixThisNum);
+  // console.log(arr);
+  // console.log(modCheck);
+  return arr;
+};
+console.log(validateCred(validatingInvalidatedCard(invalid1)));
+console.log(validateCred(validatingInvalidatedCard(invalid2)));
+console.log(validateCred(validatingInvalidatedCard(invalid3)));
+console.log(validateCred(validatingInvalidatedCard(invalid4)));
+console.log(validateCred(validatingInvalidatedCard(invalid5)));
