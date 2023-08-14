@@ -17,7 +17,7 @@ const mystery1 = [3, 4, 4, 8, 0, 1, 9, 6, 8, 3, 0, 5, 4, 1, 4];
 const mystery2 = [5, 4, 6, 6, 1, 0, 0, 8, 6, 1, 6, 2, 0, 2, 3, 9]; //valid
 const mystery3 = [6, 0, 1, 1, 3, 7, 7, 0, 2, 0, 9, 6, 2, 6, 5, 6, 2, 0, 3];
 const mystery4 = [4, 9, 2, 9, 8, 7, 7, 1, 6, 9, 2, 1, 7, 0, 9, 3];
-const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]; //vavlid
+const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]; //valid
 
 // An array of all the arrays above
 const batch = [
@@ -60,3 +60,11 @@ const validateCred = (arr) => {
   // console.log(modCheck);
   return modCheck % 10 === 0;
 };
+const findInvalidCards = (arrArr) => {
+  const invalidCards = arrArr.filter((arr) => validateCred(arr) === false);
+  // console.log(invalidCards);
+  // console.log("=======================");
+  // console.log(arrArr);
+  return invalidCards;
+};
+findInvalidCards(batch);
