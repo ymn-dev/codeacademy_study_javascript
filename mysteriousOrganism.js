@@ -18,6 +18,22 @@ const pAequorFactory = (number, DNAArr) => {
   const pAequor = {
     specimenNum: number,
     dna: DNAArr,
+    compareDNA(anotherPAequor) {
+      let commonDNA = 0;
+      // console.log("dna1 "+this.dna);
+      // console.log("dna2 "+anotherPAequor.dna);
+      for (let i = 0; i < anotherPAequor.dna.length; i++) {
+        if (this.dna[i] === anotherPAequor.dna[i]) {
+          commonDNA++;
+        }
+      }
+      // console.log(commonDNA);
+      commonDNA /= anotherPAequor.dna.length;
+      // console.log(`specimen #${this.specimenNum} and specimen #${anotherPAequor.specimenNum} have ${(commonDNA*=100).toFixed(2)}% DNA in common.`);
+      return `specimen #${this.specimenNum} and specimen #${
+        anotherPAequor.specimenNum
+      } have ${(commonDNA *= 100).toFixed(2)}% DNA in common.`;
+    },
   };
   return pAequor;
 };
@@ -36,3 +52,6 @@ const mutate = (DNAArr) => {
 };
 
 // mutate(mockUpStrand());
+// const pA2547 = pAequorFactory("2547",mockUpStrand());
+// const pA2548 = pAequorFactory("2548",mockUpStrand());
+// pA2547.compareDNA(pA2548);
