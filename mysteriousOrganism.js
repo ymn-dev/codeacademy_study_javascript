@@ -34,6 +34,25 @@ const pAequorFactory = (number, DNAArr) => {
         anotherPAequor.specimenNum
       } have ${(commonDNA *= 100).toFixed(2)}% DNA in common.`;
     },
+    willLikelySurvive() {
+      // console.log(this.dna);
+      let goodDNA = 0;
+      for (let i = 0; i < this.dna.length; i++) {
+        if (this.dna[i] === "C" || this.dna[i] === "G") {
+          goodDNA++;
+        }
+      }
+      // console.log(goodDNA);
+      goodDNA /= this.dna.length;
+      // console.log(goodDNA);
+      if (goodDNA >= 0.6) {
+        // console.log("likely will survive");
+        return true;
+      } else {
+        // console.log("likely wont survive");
+        return false;
+      }
+    },
   };
   return pAequor;
 };
@@ -52,6 +71,7 @@ const mutate = (DNAArr) => {
 };
 
 // mutate(mockUpStrand());
-// const pA2547 = pAequorFactory("2547",mockUpStrand());
+const pA2547 = pAequorFactory("2547", mockUpStrand());
 // const pA2548 = pAequorFactory("2548",mockUpStrand());
 // pA2547.compareDNA(pA2548);
+// pA2547.willLikelySurvive();
