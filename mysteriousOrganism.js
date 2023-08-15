@@ -71,7 +71,25 @@ const mutate = (DNAArr) => {
 };
 
 // mutate(mockUpStrand());
-const pA2547 = pAequorFactory("2547", mockUpStrand());
+// const pA2547 = pAequorFactory("2547",mockUpStrand());
 // const pA2548 = pAequorFactory("2548",mockUpStrand());
 // pA2547.compareDNA(pA2548);
 // pA2547.willLikelySurvive();
+let assignedNum = 0;
+const createUniqueNum = (num) => {
+  assignedNum++;
+  return assignedNum;
+};
+
+const createStrongSamples = (num) => {
+  const strongPAequor = [];
+  do {
+    const temp = pAequorFactory(createUniqueNum(), mockUpStrand());
+    if (temp.willLikelySurvive()) {
+      strongPAequor.push(temp);
+    } else continue;
+  } while (strongPAequor.length < num);
+  return strongPAequor;
+};
+const testPAequor = createStrongSamples(30);
+console.log(testPAequor);
