@@ -12,3 +12,15 @@ const mockUpStrand = () => {
   }
   return newStrand;
 };
+
+// console.log(mockUpStrand());
+
+const pAequorFactory = (number, DNAArr) => {
+  const pAequor = {
+    specimenNum: number,
+    dna: DNAArr,
+  };
+  return pAequor;
+};
+
+console.log(pAequorFactory(2547, mockUpStrand));
