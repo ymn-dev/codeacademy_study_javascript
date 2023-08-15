@@ -53,6 +53,20 @@ const pAequorFactory = (number, DNAArr) => {
         return false;
       }
     },
+    complementStrand() {
+      // console.log(this.dna);
+      // const complement = this.dna.map(e=>e).reverse();
+      const complement = [];
+      // console.log(complement);
+      for (let i = 0; i < this.dna.length; i++) {
+        if (this.dna[i] === "A") complement.push("T");
+        if (this.dna[i] === "T") complement.push("A");
+        if (this.dna[i] === "C") complement.push("G");
+        if (this.dna[i] === "G") complement.push("C");
+      }
+      // console.log(complement);
+      return complement;
+    },
   };
   return pAequor;
 };
@@ -75,6 +89,7 @@ const mutate = (DNAArr) => {
 // const pA2548 = pAequorFactory("2548",mockUpStrand());
 // pA2547.compareDNA(pA2548);
 // pA2547.willLikelySurvive();
+// console.log(pA2547.complementStrand());
 let assignedNum = 0;
 const createUniqueNum = (num) => {
   assignedNum++;
@@ -91,5 +106,5 @@ const createStrongSamples = (num) => {
   } while (strongPAequor.length < num);
   return strongPAequor;
 };
-const testPAequor = createStrongSamples(30);
-console.log(testPAequor);
+// const testPAequor = createStrongSamples(30);
+// console.log(testPAequor);
