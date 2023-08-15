@@ -12,7 +12,6 @@ const mockUpStrand = () => {
   }
   return newStrand;
 };
-
 // console.log(mockUpStrand());
 
 const pAequorFactory = (number, DNAArr) => {
@@ -22,5 +21,18 @@ const pAequorFactory = (number, DNAArr) => {
   };
   return pAequor;
 };
+// console.log(pAequorFactory(2547,mockUpStrand));
 
-console.log(pAequorFactory(2547, mockUpStrand));
+const mutate = (DNAArr) => {
+  const mutatePos = Math.floor(Math.random() * DNAArr.length);
+  // console.log(mutatePos);
+  let previousDNA = DNAArr[mutatePos];
+  do {
+    // console.log("+a random attempt");
+    DNAArr[mutatePos] = returnRandBase();
+  } while (DNAArr[mutatePos] === previousDNA);
+  // console.log("before = "+previousDNA);
+  // console.log("after = "+DNAArr[mutatePos]);
+};
+
+// mutate(mockUpStrand());
