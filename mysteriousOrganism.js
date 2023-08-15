@@ -90,21 +90,54 @@ const mutate = (DNAArr) => {
 // pA2547.compareDNA(pA2548);
 // pA2547.willLikelySurvive();
 // console.log(pA2547.complementStrand());
-let assignedNum = 0;
+let assignedNum = -1;
 const createUniqueNum = (num) => {
   assignedNum++;
   return assignedNum;
 };
 
+const allSpecimen = [];
 const createStrongSamples = (num) => {
   const strongPAequor = [];
   do {
     const temp = pAequorFactory(createUniqueNum(), mockUpStrand());
+    allSpecimen.push(temp);
     if (temp.willLikelySurvive()) {
       strongPAequor.push(temp);
     } else continue;
-  } while (strongPAequor.length < num);
+  } while (strongPAequor.length <= num);
   return strongPAequor;
 };
 // const testPAequor = createStrongSamples(30);
+const getCompareDNANum = (str) => {
+  const startIndex = str.indexOf("have") + "have".length;
+  const endIndex = str.indexOf("%");
+
+  if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
+    return parseFloat(str.substring(startIndex, endIndex).trim());
+  }
+  return 0;
+};
+
+const testPAequor = createStrongSamples(30);
 // console.log(testPAequor);
+// console.log(allSpecimen);
+const findMostRelated = (pAequor) => {
+  let myClosest = 0;
+  let previousValue = 0;
+  for (let i = 1; i < assignedNum; i++) {
+    if (i !== pAequor.specimenNum) {
+      // console.log("previousValue = "+previousValue);
+      let value = getCompareDNANum(pAequor.compareDNA(allSpecimen[i]));
+      if (value > previousValue) {
+        // console.log("currentValue = "+value);
+        previousValue = value;
+        myClosest = i;
+        // console.log("closestSample = "+myClosest);
+      }
+    }
+  }
+  // console.log(`the specimen most related to specimen number ${pAequor.specimenNum} is specimen number ${myClosest} with ${previousValue}% similarity`);
+  return `the specimen most related to specimen number ${pAequor.specimenNum} is specimen number ${myClosest} with ${previousValue}% similarity`;
+};
+console.log(findMostRelated(allSpecimen[0]));
