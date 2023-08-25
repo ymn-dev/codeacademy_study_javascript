@@ -24,17 +24,30 @@ class Field {
       console.log(row.join(""));
     });
   }
-  checkLoseCondition() {}
-  checkWinCondition() {
+  getWinCondition() {
     let elementCounter = 0;
     let found = -1;
     this._field.findIndex((element) => {
-      found = element.indexOf("^");
+      found = element.indexOf(hat);
       if (found === -1) {
         elementCounter++;
       }
     });
     return [elementCounter, found];
+  }
+  getLoseCondition() {
+    let elementCounter = 0;
+    let found;
+    const loseArr = [];
+    this._field.forEach((element, index) => {
+      found = element.indexOf(hole);
+      if (found === -1) {
+        elementCounter++;
+      } else {
+        loseArr.push([elementCounter, found]);
+      }
+    });
+    return loseArr;
   }
 }
 
@@ -45,4 +58,5 @@ const myField = new Field([
 ]);
 
 myField.print();
-console.log(myField.checkWinCondition());
+console.log(myField.getWinCondition());
+console.log(myField.getLoseCondition());
