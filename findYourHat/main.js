@@ -21,32 +21,32 @@ class Field {
     this._field = arr;
   }
   print() {
-    clear();
+    // clear();
     this._field.forEach((row) => {
       console.log(row.join(""));
     });
   }
   getWinCondition() {
-    let elementCounter = 0;
-    let found = -1;
-    this._field.findIndex((element) => {
+    let found;
+    let winLocation;
+    this._field.forEach((element, index) => {
       found = element.indexOf(hat);
-      if (found === -1) {
-        elementCounter++;
+      if (found > -1) {
+        winLocation = [index, found];
       }
     });
-    return [elementCounter, found];
+    return winLocation;
   }
   getLoseCondition() {
-    let elementCounter = 0;
-    let found;
     const loseArr = [];
-    this._field.forEach((element, index) => {
-      found = element.indexOf(hole);
-      if (found > -1) {
-        loseArr.push([index, found]);
+    for (let i = 0; i < this._field.length; i++) {
+      const row = this._field[i];
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === hole) {
+          loseArr.push([i, j]);
+        }
       }
-    });
+    }
     return loseArr;
   }
   static arrayComparision(arrSource, arrToFind) {
@@ -186,7 +186,7 @@ class Field {
         holeCount++;
       }
     } while (holeCount <= maxHole);
-    // console.log(playField);
+    console.log(playField);
     return [playField, generateStartRow, generateStartCol];
   }
 
@@ -208,7 +208,7 @@ class Field {
 // ]);
 const myField = new Field(5, 5);
 // myField.print();
-// console.log(myField.getWinCondition());
-// console.log(myField.getLoseCondition());
+console.log(myField.getLoseCondition());
+console.log(myField.getWinCondition());
 myField.play();
 // Field.generateField(5, 5);
