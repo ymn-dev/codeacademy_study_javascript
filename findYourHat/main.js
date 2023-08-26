@@ -21,7 +21,7 @@ class Field {
     this._field = arr;
   }
   print() {
-    // clear();
+    clear();
     this._field.forEach((row) => {
       console.log(row.join(""));
     });
@@ -158,36 +158,45 @@ class Field {
       generateHatRow = Math.floor(Math.random() * row);
       generateHatCol = Math.floor(Math.random() * col);
     } while (generateStartRow === generateHatRow && generateStartCol === generateHatCol);
-    let playSpaceRemaining = playSpace;
     playField[generateStartRow][generateStartCol] = pathCharacter;
-    playSpaceRemaining--;
     playField[generateHatRow][generateHatCol] = hat;
-    playSpaceRemaining--;
-    // console.log(playField);
-
-    // //reserving at least a path to win (DITCHED FOR NOW)
-    // let winPath = [];
-    // let currentPosition = [generateStartRow, generateStartCol];
-    // const hatPosition = [generateHatRow, generateHatCol];
-    // winPath.push([currentPosition, hatPosition]);
-    // const minWinPathLength = Math.abs(generateStartRow - generateHatRow) + Math.abs(generateStartCol - generateHatCol) + 1;
-    // const maxWinPathLength = Math.ceil((row * col) / 2.5) + 1;
-    // let moves = maxWinPathLength - minWinPathLength;
-    // const rowBetween = Field.getNumbersBetween(generateStartRow, generateHatRow);
-    // const colBetween = Field.getNumbersBetween(generateStartCol, generateHatCol);
-    // let shortestMove = rowBetween.length + colBetween.length - 2;
 
     let maxHole = Math.floor(playSpace / 3);
     let holeCount = 0;
+    let testField = Array.from(playField);
     do {
       const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
-      if (playField[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
-        playField[putHoleLocation[0]][putHoleLocation[1]] = hole;
+      if (testField[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
+        testField[putHoleLocation[0]][putHoleLocation[1]] = hole;
         holeCount++;
       }
-    } while (holeCount <= maxHole);
-    console.log(playField);
-    return [playField, generateStartRow, generateStartCol];
+    } while (holeCount < maxHole);
+    // Validate the testField using a simple maze solver
+    let startRow = generateStartRow;
+    let startCol = generateStartCol;
+    let endRow = generateHatRow;
+    let endCol = generateHatCol;
+
+    let wasHere = Array.from(testField, () => Array(testField[0].length).fill(false));
+    // console.log(wasHere);
+    function recursiveSolve(x, y) {
+      if (x === endRow && y === endCol) return true;
+      if (testField[x][y] === hole || wasHere[x][y]) return false;
+      wasHere[x][y] = true;
+      if (x !== 0 && recursiveSolve(x - 1, y)) return true;
+      if (x !== testField.length - 1 && recursiveSolve(x + 1, y)) return true;
+      if (y !== 0 && recursiveSolve(x, y - 1)) return true;
+      if (y !== testField[0].length - 1 && recursiveSolve(x, y + 1)) return true;
+      return false;
+    }
+
+    if (!recursiveSolve(startRow, startCol)) {
+      console.log("Generated field is not solvable. Regenerating...");
+      return this.generateField(row, col); // Retry generating the field
+    }
+    // console.log(wasHere);
+    // console.log(testField);
+    return [testField, generateStartRow, generateStartCol];
   }
 
   static getNumbersBetween(start, end) {
@@ -206,9 +215,20 @@ class Field {
 //   ["░", "O", "░"],
 //   ["░", "^", "░"],
 // ]);
-const myField = new Field(5, 5);
+// const myField = new Field(5, 5);
 // myField.print();
-console.log(myField.getLoseCondition());
-console.log(myField.getWinCondition());
-myField.play();
+// console.log(myField.getLoseCondition());
+// console.log(myField.getWinCondition());
+let createField;
+do {
+  const height = parseInt(prompt("Insert Height: "));
+  const width = parseInt(prompt("Insert Width: "));
+  if (!isNaN(height) && !isNaN(width)) {
+    createField = new Field(height, width);
+    createField.play();
+    break;
+  } else {
+    console.log("Invalid Input(s), try again!");
+  }
+} while (true);
 // Field.generateField(5, 5);
