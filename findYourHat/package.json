@@ -6,6 +6,7 @@
   "author": "Codecademy",
   "license": "ISC",
   "dependencies": {
+    "clear": "^0.1.0",
     "prompt-sync": "^4.1.7"
   }
 }
