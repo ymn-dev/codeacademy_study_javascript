@@ -8,17 +8,9 @@ const pathCharacter = "*";
 
 class Field {
   constructor(row, col) {
-    // this._field = arr;
-    // this._startPosition = [0, 0];
     let generator = Field.generateField(row, col);
     this._field = generator[0];
     this._startPosition = [generator[1], generator[2]];
-  }
-  get field() {
-    return this._field;
-  }
-  set field(arr) {
-    this._field = arr;
   }
   print() {
     clear();
@@ -49,18 +41,18 @@ class Field {
     }
     return loseArr;
   }
-  static arrayComparision(arrSource, arrToFind) {
-    const index = arrSource.findIndex((arrSourceItem) => JSON.stringify(arrSourceItem) === JSON.stringify(arrToFind));
-    return index;
-  }
   move(key) {
     let myPosition = this._startPosition;
+    const arrayComparision = (arrSource, arrToFind) => {
+      const index = arrSource.findIndex((arrSourceItem) => JSON.stringify(arrSourceItem) === JSON.stringify(arrToFind));
+      return index;
+    };
     if (key === "W") {
       if (myPosition[0] === 0) {
         return [false, "You left the map"];
       } else {
         myPosition[0]--;
-        if (Field.arrayComparision(this.getLoseCondition(), myPosition) > -1) {
+        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
           return [false, "You fell into a hole!"];
         } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
           return [false, "You Win"];
@@ -75,7 +67,7 @@ class Field {
         return [false, "You left the map"];
       } else {
         myPosition[1]--;
-        if (Field.arrayComparision(this.getLoseCondition(), myPosition) > -1) {
+        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
           return [false, "You fell into a hole!"];
         } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
           return [false, "You Win"];
@@ -90,7 +82,7 @@ class Field {
         return [false, "You left the map"];
       } else {
         myPosition[0]++;
-        if (Field.arrayComparision(this.getLoseCondition(), myPosition) > -1) {
+        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
           return [false, "You fell into a hole!"];
         } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
           return [false, "You Win"];
@@ -105,7 +97,7 @@ class Field {
         return [false, "You left the map"];
       } else {
         myPosition[1]++;
-        if (Field.arrayComparision(this.getLoseCondition(), myPosition) > -1) {
+        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
           return [false, "You fell into a hole!"];
         } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
           return [false, "You Win"];
@@ -121,7 +113,7 @@ class Field {
     while (true) {
       this.print();
       console.log("How to play: W A S D to move!");
-      let input = prompt("Which Way?: ").toUpperCase();
+      let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
       if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
         let result = this.move(input);
         if (!result[0]) {
@@ -142,7 +134,7 @@ class Field {
     }
     const playField = [];
     const playSpace = row * col;
-    //making the play field all the moveable space
+    //generating empty field
     for (let i = 0; i < row; i++) {
       const rowArray = [];
       for (let j = 0; j < col; j++) {
@@ -154,75 +146,61 @@ class Field {
     const generateStartCol = Math.floor(Math.random() * col);
     let generateHatRow;
     let generateHatCol;
+    //generating start and win condition
     do {
       generateHatRow = Math.floor(Math.random() * row);
       generateHatCol = Math.floor(Math.random() * col);
+      //re-random until the position isn't on top of start
     } while (generateStartRow === generateHatRow && generateStartCol === generateHatCol);
     playField[generateStartRow][generateStartCol] = pathCharacter;
     playField[generateHatRow][generateHatCol] = hat;
 
     let maxHole = Math.floor(playSpace / 3);
     let holeCount = 0;
-    let testField = Array.from(playField);
     do {
       const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
-      if (testField[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
-        testField[putHoleLocation[0]][putHoleLocation[1]] = hole;
+      if (playField[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
+        playField[putHoleLocation[0]][putHoleLocation[1]] = hole;
         holeCount++;
       }
     } while (holeCount < maxHole);
-    // Validate the testField using a simple maze solver
+    // validate the playField using a recursive solver below
     let startRow = generateStartRow;
     let startCol = generateStartCol;
     let endRow = generateHatRow;
     let endCol = generateHatCol;
 
-    let wasHere = Array.from(testField, () => Array(testField[0].length).fill(false));
-    // console.log(wasHere);
+    let wasHere = Array.from(playField, () => Array(playField[0].length).fill(false));
+    //make a new array of false to use for recursive path
     function recursiveSolve(x, y) {
+      //reach the end condition
       if (x === endRow && y === endCol) return true;
-      if (testField[x][y] === hole || wasHere[x][y]) return false;
+      //if real field equivalent of slot is a hole or we're taking the same path return false
+      if (playField[x][y] === hole || wasHere[x][y]) return false;
+      //mark current location
       wasHere[x][y] = true;
+      /*moving left, checking whether you're at the edge or not
+        then we call this function again (recursivev), it will keep going left until it cant (return false)
+        then it will move down to lower condition(s) aka try right/up/down next, marking wasHere along the way*/
       if (x !== 0 && recursiveSolve(x - 1, y)) return true;
-      if (x !== testField.length - 1 && recursiveSolve(x + 1, y)) return true;
+      if (x !== playField.length - 1 && recursiveSolve(x + 1, y)) return true;
       if (y !== 0 && recursiveSolve(x, y - 1)) return true;
-      if (y !== testField[0].length - 1 && recursiveSolve(x, y + 1)) return true;
+      if (y !== playField[0].length - 1 && recursiveSolve(x, y + 1)) return true;
       return false;
     }
-
     if (!recursiveSolve(startRow, startCol)) {
-      console.log("Generated field is not solvable. Regenerating...");
-      return this.generateField(row, col); // Retry generating the field
+      console.log("Generated field is not solvable. Regenerating..."); //remove clear(); on line 16 to see this
+      return this.generateField(row, col); // retry generating the field if final result of recursive loop is false
     }
-    // console.log(wasHere);
-    // console.log(testField);
-    return [testField, generateStartRow, generateStartCol];
-  }
-
-  static getNumbersBetween(start, end) {
-    const numbers = [];
-
-    for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
-      numbers.push(i);
-    }
-
-    return numbers;
+    return [playField, generateStartRow, generateStartCol];
   }
 }
 
-// const myField = new Field([
-//   ["*", "░", "O"],
-//   ["░", "O", "░"],
-//   ["░", "^", "░"],
-// ]);
-// const myField = new Field(5, 5);
-// myField.print();
-// console.log(myField.getLoseCondition());
-// console.log(myField.getWinCondition());
 let createField;
+//keep asking for input until getting a proper input
 do {
-  const height = parseInt(prompt("Insert Height: "));
-  const width = parseInt(prompt("Insert Width: "));
+  const height = parseInt(prompt("How many rows?: "));
+  const width = parseInt(prompt("How many columns?: "));
   if (!isNaN(height) && !isNaN(width)) {
     createField = new Field(height, width);
     createField.play();
@@ -231,4 +209,3 @@ do {
     console.log("Invalid Input(s), try again!");
   }
 } while (true);
-// Field.generateField(5, 5);
