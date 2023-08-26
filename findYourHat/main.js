@@ -7,9 +7,12 @@ const fieldCharacter = "░";
 const pathCharacter = "*";
 
 class Field {
-  constructor(arr = [[]]) {
-    this._field = arr;
-    this._startPosition = [0, 0];
+  constructor(row, col) {
+    // this._field = arr;
+    // this._startPosition = [0, 0];
+    let generator = Field.generateField(row, col);
+    this._field = generator[0];
+    this._startPosition = [generator[1], generator[2]];
   }
   get field() {
     return this._field;
@@ -147,8 +150,6 @@ class Field {
       }
       playField.push(rowArray);
     }
-    // let maxHole = Math.floor(playSpace / 3);
-    let playSpaceRemaining = playSpace;
     const generateStartRow = Math.floor(Math.random() * row);
     const generateStartCol = Math.floor(Math.random() * col);
     let generateHatRow;
@@ -157,24 +158,57 @@ class Field {
       generateHatRow = Math.floor(Math.random() * row);
       generateHatCol = Math.floor(Math.random() * col);
     } while (generateStartRow === generateHatRow && generateStartCol === generateHatCol);
-
+    let playSpaceRemaining = playSpace;
     playField[generateStartRow][generateStartCol] = pathCharacter;
+    playSpaceRemaining--;
     playField[generateHatRow][generateHatCol] = hat;
+    playSpaceRemaining--;
+    // console.log(playField);
 
-    console.log(playField);
+    // //reserving at least a path to win (DITCHED FOR NOW)
+    // let winPath = [];
+    // let currentPosition = [generateStartRow, generateStartCol];
+    // const hatPosition = [generateHatRow, generateHatCol];
+    // winPath.push([currentPosition, hatPosition]);
+    // const minWinPathLength = Math.abs(generateStartRow - generateHatRow) + Math.abs(generateStartCol - generateHatCol) + 1;
+    // const maxWinPathLength = Math.ceil((row * col) / 2.5) + 1;
+    // let moves = maxWinPathLength - minWinPathLength;
+    // const rowBetween = Field.getNumbersBetween(generateStartRow, generateHatRow);
+    // const colBetween = Field.getNumbersBetween(generateStartCol, generateHatCol);
+    // let shortestMove = rowBetween.length + colBetween.length - 2;
+
+    let maxHole = Math.floor(playSpace / 3);
+    let holeCount = 0;
+    do {
+      const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
+      if (playField[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
+        playField[putHoleLocation[0]][putHoleLocation[1]] = hole;
+        holeCount++;
+      }
+    } while (holeCount <= maxHole);
+    // console.log(playField);
+    return [playField, generateStartRow, generateStartCol];
+  }
+
+  static getNumbersBetween(start, end) {
+    const numbers = [];
+
+    for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+      numbers.push(i);
+    }
+
+    return numbers;
   }
 }
 
-const myField = new Field([
-  ["*", "░", "O"],
-  ["░", "O", "░"],
-  ["░", "^", "░"],
-]);
-
+// const myField = new Field([
+//   ["*", "░", "O"],
+//   ["░", "O", "░"],
+//   ["░", "^", "░"],
+// ]);
+const myField = new Field(5, 5);
 // myField.print();
 // console.log(myField.getWinCondition());
 // console.log(myField.getLoseCondition());
-// myField.play();
-Field.generateField(5, 5);
-// console.log(Math.round(0.4));
-// console.log(Math.round(0.5));
+myField.play();
+// Field.generateField(5, 5);
