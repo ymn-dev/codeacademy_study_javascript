@@ -11,6 +11,7 @@ class Field {
     let generator = Field.generateField(row, col);
     this._field = generator[0];
     this._startPosition = [generator[1], generator[2]];
+    this._playSpace = row * col - 2; //in case want to optimize hard mode bomb generating later
   }
   print() {
     clear();
@@ -108,48 +109,35 @@ class Field {
       }
     }
   }
-
-  play() {
-    while (true) {
-      this.print();
-      console.log("How to play: W A S D to move!");
-      let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
-      if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
-        let result = this.move(input);
-        if (!result[0]) {
-          //this checks true/false in return array, false will stop the game
-          console.log(result[1]); //take message attached to false
-          break;
-        }
-      } else {
-        console.log("Invalid Input");
-      }
-    }
-  }
-  playHard() {
+  play(mode = "N") {
+    const stepsUntilMoreHole = 3;
     let stepCount = 0;
     let successfullyPutAHole = false;
-    const stepsUntilMoreHole = 3;
+
     while (true) {
       this.print();
       console.log("How to play: W A S D to move!");
-      console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps`);
+      if (mode === "H") {
+        console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps`);
+      }
       let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
       if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
         let result = this.move(input);
-        stepCount++;
-        if (stepCount === stepsUntilMoreHole) {
-          const row = this._field.length;
-          const col = this._field[0].length;
-          do {
-            const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
-            if (this._field[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
-              this._field[putHoleLocation[0]][putHoleLocation[1]] = hole;
-              successfullyPutAHole = true;
-            }
-          } while (!successfullyPutAHole);
-          stepCount = 0;
-          successfullyPutAHole = false;
+        if (mode === "H") {
+          stepCount++;
+          if (stepCount === stepsUntilMoreHole) {
+            const row = this._field.length;
+            const col = this._field[0].length;
+            do {
+              const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
+              if (this._field[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
+                this._field[putHoleLocation[0]][putHoleLocation[1]] = hole;
+                successfullyPutAHole = true;
+              }
+            } while (!successfullyPutAHole);
+            stepCount = 0;
+            successfullyPutAHole = false;
+          }
         }
         if (!result[0]) {
           //this checks true/false in return array, false will stop the game
@@ -161,7 +149,8 @@ class Field {
       }
     }
   }
-  static generateField(row, col) {
+
+  static generateField(row, col, mode = "N") {
     parseInt(row);
     parseInt(col);
     if (row < 2 && col < 2) {
@@ -232,20 +221,28 @@ class Field {
   }
 }
 
-let createField;
 //keep asking for input until getting a proper input
 do {
+  let createField;
   const height = parseInt(prompt("How many rows?: "));
   const width = parseInt(prompt("How many columns?: "));
   if (!isNaN(height) && !isNaN(width)) {
-    createField = new Field(height, width);
-    let notValidInput = true;
+    let mode;
     do {
-      const mode = prompt("Normal or hard mode? (N/H): ").toUpperCase();
-      notValidInput = false;
-      mode === "N" ? createField.play() : mode === "H" ? createField.playHard() : (notValidInput = true);
-    } while (notValidInput);
+      mode = prompt("Normal or hard mode? (N/H): ").toUpperCase();
+      if (mode !== "N" && mode !== "H") console.log("Invalid input, try again");
+    } while (mode !== "N" && mode !== "H");
+    createField = new Field(height, width, mode);
+    createField.play(mode);
     break;
+    // createField = new Field(height, width);
+    // let notValidInput = true;
+    // do {
+    //   const mode = prompt("Normal or hard mode? (N/H): ").toUpperCase();
+    //   notValidInput = false;
+    //   mode === "N" ? createField.play() : mode === "H" ? createField.playHard() : (notValidInput = true);
+    // } while (notValidInput);
+    // break;
   } else {
     console.log("Invalid Input(s), try again!");
   }
