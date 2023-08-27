@@ -117,7 +117,43 @@ class Field {
       if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
         let result = this.move(input);
         if (!result[0]) {
-          console.log(result[1]);
+          //this checks true/false in return array, false will stop the game
+          console.log(result[1]); //take message attached to false
+          break;
+        }
+      } else {
+        console.log("Invalid Input");
+      }
+    }
+  }
+  playHard() {
+    let stepCount = 0;
+    let successfullyPutAHole = false;
+    const stepsUntilMoreHole = 3;
+    while (true) {
+      this.print();
+      console.log("How to play: W A S D to move!");
+      console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps`);
+      let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
+      if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
+        let result = this.move(input);
+        stepCount++;
+        if (stepCount === stepsUntilMoreHole) {
+          const row = this._field.length;
+          const col = this._field[0].length;
+          do {
+            const putHoleLocation = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)];
+            if (this._field[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
+              this._field[putHoleLocation[0]][putHoleLocation[1]] = hole;
+              successfullyPutAHole = true;
+            }
+          } while (!successfullyPutAHole);
+          stepCount = 0;
+          successfullyPutAHole = false;
+        }
+        if (!result[0]) {
+          //this checks true/false in return array, false will stop the game
+          console.log(result[1]); //take message attached to false
           break;
         }
       } else {
@@ -189,7 +225,7 @@ class Field {
       return false;
     }
     if (!recursiveSolve(startRow, startCol)) {
-      console.log("Generated field is not solvable. Regenerating..."); //remove clear(); on line 16 to see this
+      // console.log("Generated field is not solvable. Regenerating...");
       return this.generateField(row, col); // retry generating the field if final result of recursive loop is false
     }
     return [playField, generateStartRow, generateStartCol];
@@ -203,7 +239,12 @@ do {
   const width = parseInt(prompt("How many columns?: "));
   if (!isNaN(height) && !isNaN(width)) {
     createField = new Field(height, width);
-    createField.play();
+    let notValidInput = true;
+    do {
+      const mode = prompt("Normal or hard mode? (N/H): ").toUpperCase();
+      notValidInput = false;
+      mode === "N" ? createField.play() : mode === "H" ? createField.playHard() : (notValidInput = true);
+    } while (notValidInput);
     break;
   } else {
     console.log("Invalid Input(s), try again!");
