@@ -5,7 +5,7 @@ const hat = "^";
 const hole = "O";
 const fieldCharacter = "░";
 const pathCharacter = "*";
-
+const pathTaken = " ";
 class Field {
   constructor(row, col) {
     let generator = Field.generateField(row, col);
@@ -15,9 +15,13 @@ class Field {
   }
   print() {
     clear();
+    const border = "+" + "-".repeat(this._field[0].length) + "+";
+    console.log(border);
+    // Print field rows with borders
     this._field.forEach((row) => {
-      console.log(row.join(""));
+      console.log("|" + row.join("") + "|");
     });
+    console.log(border);
   }
   getWinCondition() {
     let found;
@@ -43,72 +47,40 @@ class Field {
     return loseArr;
   }
   move(key) {
-    let myPosition = this._startPosition;
-    const arrayComparision = (arrSource, arrToFind) => {
-      const index = arrSource.findIndex((arrSourceItem) => JSON.stringify(arrSourceItem) === JSON.stringify(arrToFind));
-      return index;
+    const directions = {
+      W: [-1, 0], // Up
+      A: [0, -1], // Left
+      S: [1, 0], // Down
+      D: [0, 1], // Right
     };
-    if (key === "W") {
-      if (myPosition[0] === 0) {
-        return [false, "You left the map"];
-      } else {
-        myPosition[0]--;
-        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
-          return [false, "You fell into a hole!"];
-        } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
-          return [false, "You Win"];
-        } else {
-          this._field[myPosition[0]][myPosition[1]] = pathCharacter;
-          return [true];
-        }
-      }
+
+    if (!(key in directions)) {
+      return [false, "Invalid Input"];
     }
-    if (key === "A") {
-      if (myPosition[1] === 0) {
-        return [false, "You left the map"];
-      } else {
-        myPosition[1]--;
-        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
-          return [false, "You fell into a hole!"];
-        } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
-          return [false, "You Win"];
-        } else {
-          this._field[myPosition[0]][myPosition[1]] = pathCharacter;
-          return [true];
-        }
-      }
+
+    const direction = directions[key];
+    let newRow = this._startPosition[0] + direction[0];
+    let newCol = this._startPosition[1] + direction[1];
+
+    if (newRow < 0 || newRow >= this._field.length || newCol < 0 || newCol >= this._field[0].length) {
+      return [false, "You left the map"];
     }
-    if (key === "S") {
-      if (myPosition[0] === this._field.length - 1) {
-        return [false, "You left the map"];
-      } else {
-        myPosition[0]++;
-        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
-          return [false, "You fell into a hole!"];
-        } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
-          return [false, "You Win"];
-        } else {
-          this._field[myPosition[0]][myPosition[1]] = pathCharacter;
-          return [true];
-        }
-      }
+
+    if (this._field[newRow][newCol] === hole) {
+      return [false, "You fell into a hole!"];
     }
-    if (key === "D") {
-      if (myPosition[1] === this._field[0].length - 1) {
-        return [false, "You left the map"];
-      } else {
-        myPosition[1]++;
-        if (arrayComparision(this.getLoseCondition(), myPosition) > -1) {
-          return [false, "You fell into a hole!"];
-        } else if (JSON.stringify(myPosition) === JSON.stringify(this.getWinCondition())) {
-          return [false, "You Win"];
-        } else {
-          this._field[myPosition[0]][myPosition[1]] = pathCharacter;
-          return [true];
-        }
-      }
+
+    if (this._field[newRow][newCol] === hat) {
+      return [false, "You Win"];
     }
+
+    this._field[this._startPosition[0]][this._startPosition[1]] = pathTaken; // mark previous location as pathTaken
+    this._field[newRow][newCol] = pathCharacter; // mark new location as pathCharacter
+    this._startPosition = [newRow, newCol]; // update the starting position
+
+    return [true];
   }
+
   play(mode = "N") {
     const stepsUntilMoreHole = 3;
     let stepCount = 0;
@@ -118,7 +90,8 @@ class Field {
       this.print();
       console.log("How to play: W A S D to move!");
       if (mode === "H") {
-        console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps`);
+        console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps.`);
+        console.log(`NO GUARANTEED VICTORY. Move wisely, Say your prayers.`);
       }
       let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
       if (input.length === 1 && (input === "W" || input === "A" || input === "S" || input === "D")) {
@@ -235,14 +208,6 @@ do {
     createField = new Field(height, width, mode);
     createField.play(mode);
     break;
-    // createField = new Field(height, width);
-    // let notValidInput = true;
-    // do {
-    //   const mode = prompt("Normal or hard mode? (N/H): ").toUpperCase();
-    //   notValidInput = false;
-    //   mode === "N" ? createField.play() : mode === "H" ? createField.playHard() : (notValidInput = true);
-    // } while (notValidInput);
-    // break;
   } else {
     console.log("Invalid Input(s), try again!");
   }
