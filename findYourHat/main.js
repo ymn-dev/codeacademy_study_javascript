@@ -7,9 +7,12 @@ const fieldCharacter = "⬜";
 const pathCharacter = "😎";
 const pathTaken = "🟨";
 /*for easier customization*/
-const hatName = "book";
+const hatName = "tome";
 const holeName = "bomb";
 const borderCharacter = "⚡";
+const mapLoseText = "YOU GOT ZAPPED!";
+const holeLoseText = "YOU DIED! CAREFUL WITH THE BOMB";
+const winText = "YOU FOUND THE LEGENDARY TOME!";
 class Field {
   constructor(row, col) {
     let generator = Field.generateField(row, col);
@@ -67,15 +70,15 @@ class Field {
     let newCol = this._startPosition[1] + direction[1];
 
     if (newRow < 0 || newRow >= this._field.length || newCol < 0 || newCol >= this._field[0].length) {
-      return [false, "You left the map"];
+      return [false, mapLoseText];
     }
 
     if (this._field[newRow][newCol] === hole) {
-      return [false, "You fell into a hole!"];
+      return [false, holeLoseText];
     }
 
     if (this._field[newRow][newCol] === hat) {
-      return [false, "You Win"];
+      return [false, winText];
     }
 
     this._field[this._startPosition[0]][this._startPosition[1]] = pathTaken; // mark previous location as pathTaken
