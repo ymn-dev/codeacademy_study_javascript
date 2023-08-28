@@ -1,25 +1,29 @@
 const prompt = require("prompt-sync")({ sigint: true });
 const clear = require("clear");
 
-const hat = "^";
-const hole = "O";
-const fieldCharacter = "░";
-const pathCharacter = "*";
-const pathTaken = " ";
+const hat = "📚";
+const hole = "💣";
+const fieldCharacter = "⬜";
+const pathCharacter = "😎";
+const pathTaken = "🟨";
+/*for easier customization*/
+const hatName = "book";
+const holeName = "bomb";
+const borderCharacter = "⚡";
 class Field {
   constructor(row, col) {
     let generator = Field.generateField(row, col);
     this._field = generator[0];
     this._startPosition = [generator[1], generator[2]];
-    this._playSpace = row * col - 2; //in case want to optimize hard mode bomb generating later
+    this._playSpace = row * col - 2 - Math.floor((row * col) / 3); //in case want to optimize hard mode bomb generating later
   }
   print() {
     clear();
-    const border = "+" + "-".repeat(this._field[0].length) + "+";
+    const border = borderCharacter.repeat(this._field[0].length + 2);
     console.log(border);
     // Print field rows with borders
     this._field.forEach((row) => {
-      console.log("|" + row.join("") + "|");
+      console.log(borderCharacter + row.join("") + borderCharacter);
     });
     console.log(border);
   }
@@ -75,6 +79,7 @@ class Field {
     }
 
     this._field[this._startPosition[0]][this._startPosition[1]] = pathTaken; // mark previous location as pathTaken
+    if (this._field[newRow][newCol] === fieldCharacter) this._playSpace--;
     this._field[newRow][newCol] = pathCharacter; // mark new location as pathCharacter
     this._startPosition = [newRow, newCol]; // update the starting position
 
@@ -88,9 +93,9 @@ class Field {
 
     while (true) {
       this.print();
-      console.log("How to play: W A S D to move!");
+      console.log(`How to play: W A S D to move ${pathCharacter} to ${hat}`);
       if (mode === "H") {
-        console.log(`In hard mode, a random hole will appear every ${stepsUntilMoreHole} steps.`);
+        console.log(`In hard mode, a random ${holeName} will appear every ${stepsUntilMoreHole} steps.`);
         console.log(`NO GUARANTEED VICTORY. Move wisely, Say your prayers.`);
       }
       let input = prompt("Which Way?: ").toUpperCase(); //make input not case sensitive
@@ -106,8 +111,9 @@ class Field {
               if (this._field[putHoleLocation[0]][putHoleLocation[1]] === fieldCharacter) {
                 this._field[putHoleLocation[0]][putHoleLocation[1]] = hole;
                 successfullyPutAHole = true;
+                this._playSpace--;
               }
-            } while (!successfullyPutAHole);
+            } while (!successfullyPutAHole && this._playSpace > 0);
             stepCount = 0;
             successfullyPutAHole = false;
           }
