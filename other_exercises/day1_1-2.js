@@ -23,9 +23,8 @@ for (let i = 0; i < arraySize; i++) {
 
   //finding biggest number
   if (valueToPush > biggestNumberInArray) {
-    if (myArray.length > 1) {
-      secondBiggestNumberInArray = biggestNumberInArray;
-    } //updating value before change biggest number
+    //updating value before change biggest number
+    secondBiggestNumberInArray = biggestNumberInArray;
     biggestNumberInArray = valueToPush;
   } else if (valueToPush < biggestNumberInArray && valueToPush > secondBiggestNumberInArray) {
     //gotta update still even if new value not higher than the biggest one
