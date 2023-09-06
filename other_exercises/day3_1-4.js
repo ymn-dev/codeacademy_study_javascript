@@ -104,13 +104,15 @@ console.log(`"${myWord3}" and "${myWord4}" are anagram? ${anagramChecker(myWord3
 
 //4.
 const palindromeChecker = (word) => {
-  const map = arraySwapper(word); //reusing old function here
-  if (word === map) return true;
+  let removingSpace = word.split(" ");
+  removingSpace = removingSpace.join(""); //adding these 2 lines just to make "never odd or even" cooler
+  const map = arraySwapper(removingSpace); //reusing old function here
+  if (removingSpace === map) return true;
   return false;
 };
 
 const testWord = "kekw";
 console.log(`${testWord} is palindrome? ${palindromeChecker(testWord)}`);
 
-const testWord2 = "neveroddoreven";
+const testWord2 = "never odd or even";
 console.log(`${testWord2} is palindrome? ${palindromeChecker(testWord2)}`);
