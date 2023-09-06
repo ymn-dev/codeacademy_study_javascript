@@ -26,6 +26,7 @@ const numberArrayGenerating = (maxSize, maxValue, onlyPositive = true) => {
   return returnArray;
 };
 
+//1,2,4
 const arraySwapper = (Arr) => {
   let wasString = false;
   if (typeof Arr === "string") {
@@ -49,12 +50,73 @@ const arraySwapper = (Arr) => {
   }
 
   if (wasString) Arr = Arr.join("");
-  console.log(Arr);
+  // console.log(Arr);
+  return Arr;
 };
 
+//1.
 const myArray = numberArrayGenerating(7, 15);
-arraySwapper(myArray);
+console.log(arraySwapper(myArray));
 
+//2.
 const testString = "hello"; //well, technically it's array of character
-console.log(testString);
-arraySwapper(testString);
+console.log("my string = " + testString);
+console.log("swapped string = " + arraySwapper(testString));
+
+//3.
+const anagramChecker = (word1, word2) => {
+  if (word1.length !== word2.length) {
+    return false;
+  }
+  const letterCounter = {};
+  //initializing checker
+  for (let i = 0; i < word1.length; i++) {
+    //pushing letters to array
+    if (!letterCounter[word1[i]]) {
+      letterCounter[word1[i]] = 1; //if doesnt exist, initiate value
+    } else {
+      letterCounter[word1[i]]++; //if exists, increase
+    }
+  }
+  // console.log(letterCounter);
+
+  //comparing letters
+  for (let i = 0; i < word2.length; i++) {
+    for (letter in letterCounter) {
+      if (letter === word2[i]) {
+        letterCounter[letter]--; //count of that letter goes down if match
+      }
+    }
+  }
+  // console.log(letterCounter);
+  //checking
+  for (letter in letterCounter) {
+    if (letterCounter[letter] !== 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const myWord1 = "listen";
+const myWord2 = "silent";
+console.log(`"${myWord1}" and "${myWord2}" are anagram? ${anagramChecker(myWord1, myWord2)}`);
+
+const myWord3 = "test";
+const myWord4 = "word";
+console.log(`"${myWord3}" and "${myWord4}" are anagram? ${anagramChecker(myWord3, myWord4)}`);
+
+//4.
+const palindromeChecker = (word) => {
+  const map = arraySwapper(word); //reusing old function here
+  // console.log(map);
+  // console.log(word);
+  if (word === map) return true;
+  return false;
+};
+
+const testWord = "kekw";
+console.log(`${testWord} is palindrome? ${palindromeChecker(testWord)}`);
+
+const testWord2 = "neveroddoreven";
+console.log(`${testWord2} is palindrome? ${palindromeChecker(testWord2)}`);
