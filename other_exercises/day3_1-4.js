@@ -22,7 +22,6 @@ const numberArrayGenerating = (maxSize, maxValue, onlyPositive = true) => {
     }
     returnArray.push(valueToPush);
   }
-  console.log(returnArray);
   return returnArray;
 };
 
@@ -50,12 +49,12 @@ const arraySwapper = (Arr) => {
   }
 
   if (wasString) Arr = Arr.join("");
-  // console.log(Arr);
   return Arr;
 };
 
 //1.
 const myArray = numberArrayGenerating(7, 15);
+console.log(myArray);
 console.log(arraySwapper(myArray));
 
 //2.
@@ -71,15 +70,13 @@ const anagramChecker = (word1, word2) => {
   const letterCounter = {};
   //initializing checker
   for (let i = 0; i < word1.length; i++) {
-    //pushing letters to array
+    //pushing letters from array to checker object
     if (!letterCounter[word1[i]]) {
       letterCounter[word1[i]] = 1; //if doesnt exist, initiate value
     } else {
       letterCounter[word1[i]]++; //if exists, increase
     }
   }
-  // console.log(letterCounter);
-
   //comparing letters
   for (let i = 0; i < word2.length; i++) {
     for (letter in letterCounter) {
@@ -88,11 +85,10 @@ const anagramChecker = (word1, word2) => {
       }
     }
   }
-  // console.log(letterCounter);
   //checking
   for (letter in letterCounter) {
     if (letterCounter[letter] !== 0) {
-      return false;
+      return false; //if there is any leftover characters return false
     }
   }
   return true;
@@ -109,8 +105,6 @@ console.log(`"${myWord3}" and "${myWord4}" are anagram? ${anagramChecker(myWord3
 //4.
 const palindromeChecker = (word) => {
   const map = arraySwapper(word); //reusing old function here
-  // console.log(map);
-  // console.log(word);
   if (word === map) return true;
   return false;
 };
