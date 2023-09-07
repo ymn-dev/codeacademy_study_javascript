@@ -26,21 +26,17 @@ const numberArrayGenerating = (maxSize, maxValue, onlyPositive = true) => {
 };
 
 //1
-const findMissing1toN = (numArr, length) => {
-  const missingList = [];
-  for (let i = 1; i <= length; i++) {
-    let match = false;
-    for (let j = 0; j < numArr.length; j++) {
-      if (numArr[j] === i) match = true;
-    }
-    if (!match) missingList.push(i);
-  }
+const findMissing1toN = (numArr) => {
+  let missingList = Array.from(numArr, (value, index) => (value = index + 1));
+  missingList = missingList.filter((number) => {
+    if (numArr.indexOf(number) === -1) return true;
+  });
   return missingList;
 };
 
 const numArray = numberArrayGenerating(7, 10);
-console.log(numArray);
-console.log(findMissing1toN(numArray, 10));
+console.log(`array = ${numArray} length = ${numArray.length}`);
+console.log(`missing number = ${findMissing1toN(numArray)}`);
 
 //2,3
 const findIntersection = (arr1, arr2) => {
@@ -58,11 +54,11 @@ const findIntersection = (arr1, arr2) => {
 };
 const numArray2 = numberArrayGenerating(7, 10);
 const numArray3 = numberArrayGenerating(3, 10);
-console.log("===================");
 console.log(`array 1 = ${numArray2}`);
 console.log(`array 2 = ${numArray3}`);
 
 //2
 console.log(`has duplicated? ${findIntersection(numArray2, numArray3)[0]}`);
 //3
-console.log(`intersection between two array: ${JSON.stringify(findIntersection(numArray2, numArray3)[1])}`);
+console.log(`intersection between two array: 
+${JSON.stringify(findIntersection(numArray2, numArray3)[1])}`);
