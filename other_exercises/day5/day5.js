@@ -22,6 +22,9 @@ Example data
 Note: Could you do it at least 100 users? Feel free to randomly generate data 
 */
 // import { faker } from "@faker-js/faker";
+const fsP = require("fs").promises;
+const fs = require("fs");
+const csv = require("csv-parser");
 const { faker } = require("@faker-js/faker");
 const departments = ["Sales", "HR", "Marketing", "QA", "Developer", "Senior Developer"];
 class Employee {
@@ -54,7 +57,50 @@ const generateEmployee = (num = 1) => {
   }
 };
 
-const employeeList = generateEmployee(100);
+// const employeeList = generateEmployee(100);
+// console.log(employeeList);
+
+const toCSV = async (arr) => {
+  const header = "Name,Age,Department,Salary,Performance Rating\n";
+  const csv = header + arr.map((row) => `${row.name},${row.age},${row.department},${row.salary},${row.performanceRating}`).join("\n");
+  try {
+    await fsP.writeFile("test.csv", csv);
+    console.log("writing success!");
+  } catch (error) {
+    console.log("writing failed");
+  }
+};
+
+//*borrowed* from Fai#35
+const readCSV = (path) => {
+  const importCSV = fs.readFileSync(path, "utf8");
+  // console.log(importCSV);
+  const convertCSV = (csv) => {
+    //splitting table header and the rest of the table
+    const [keys, ...rest] = csv
+      .trim()
+      .split("\n")
+      .map((item) => item.split(","));
+
+    const csvData = rest.map((item) => {
+      // console.log(item);
+      const object = {};
+      //table headers and values will match
+      keys.forEach((key, index) => {
+        if (key === "Performance Rating") {
+          object["performanceRating"] = item[index];
+        } else {
+          object[key.toLowerCase()] = item[index];
+        }
+      });
+      // console.log(object);
+      return object;
+    });
+    return csvData;
+  };
+  return convertCSV(importCSV);
+};
+// const employeeList = readCSV("sample.csv");
 // console.log(employeeList);
 
 const ageSort = (arr) => {
