@@ -41,11 +41,20 @@ class Employee {
   }
 }
 
-const employeeList = [];
-for (let i = 0; i < 10; i++) {
-  const employee = Employee.createRandomEmployee();
-  employeeList.push(employee);
-}
+const generateEmployee = (num = 1) => {
+  const employeeList = [];
+  for (let i = 0; i < num; i++) {
+    const employee = Employee.createRandomEmployee();
+    employeeList.push(employee);
+  }
+  if (employeeList.length > 1) {
+    return employeeList;
+  } else {
+    return employeeList[0];
+  }
+};
+
+const employeeList = generateEmployee(100);
 // console.log(employeeList);
 
 const ageSort = (arr) => {
