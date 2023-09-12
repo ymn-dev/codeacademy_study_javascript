@@ -9,10 +9,10 @@ Noted: ออกแบบ Input/Output (I/O) เองทั้งหมด พ�
 const myExpense = {
   log: [],
   addLog(date, category, moneyspent) {
-    //lets use string as date for now
     category = category.toLowerCase();
-
-    const existingDay = this.log.find((day) => day.date === date);
+    const dateSplit = date.split("-"); // Split the string into parts, YYYY,MM,DD
+    const myDate = new Date(Number(dateSplit[0]), Number(dateSplit[1]) - 1, Number(dateSplit[2]));
+    const existingDay = this.log.find((day) => day.date.toDateString() === myDate.toDateString());
 
     if (existingDay) {
       if (!existingDay[category]) {
@@ -22,19 +22,21 @@ const myExpense = {
       }
     } else {
       const newDay = {
-        date: date,
+        date: myDate,
         [category]: moneyspent,
       };
       this.log.push(newDay);
     }
   },
+  printWeeklyExpense(week) {},
+  printMonthlyExpense(month) {},
 };
 
-// myExpense.addLog("2023-9-12", "entertainment", 1500);
-// myExpense.addLog("2023-9-12", "food", 400);
+myExpense.addLog("2023-9-12", "entertainment", 1500);
+myExpense.addLog("2023-9-12", "food", 400);
 
-// myExpense.addLog("2023-9-11", "food", 500);
-// console.log(myExpense.log);
+myExpense.addLog("2023-9-11", "food", 500);
+console.log(myExpense.log);
 
 /*
 [Assignment 6 - 20230912]
