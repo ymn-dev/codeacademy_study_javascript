@@ -65,13 +65,13 @@ for (let i = 0; i < teams.length; i++) {
       let MVP = null;
       let winner = "tied";
       if (homeScore > awayScore) {
-        homeTeam.pointTotal++;
+        homeTeam.pointTotal += 3;
         const MVPPlayer = homeTeam.players[Math.floor(Math.random() * homeTeam.players.length)];
         MVPPlayer.MVPcount++;
         MVP = MVPPlayer.name;
         winner = homeTeam.name;
       } else if (awayScore > homeScore) {
-        awayTeam.pointTotal++;
+        awayTeam.pointTotal += 3;
         const MVPPlayer = awayTeam.players[Math.floor(Math.random() * awayTeam.players.length)];
         MVPPlayer.MVPcount++;
         MVP = MVPPlayer.name;
