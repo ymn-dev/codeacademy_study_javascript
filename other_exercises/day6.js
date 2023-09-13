@@ -8,7 +8,7 @@ Noted: ออกแบบ Input/Output (I/O) เองทั้งหมด พ�
 
 const myExpense = {
   log: [],
-  addLog(date, category, moneyspent) {
+  addLog(date = new Date(), category, moneyspent) {
     category = category.toLowerCase();
     const myDate = this.convertStringToDateObject(date);
     const existingDay = this.log.find((day) => day.date.toDateString() === myDate.toDateString());
