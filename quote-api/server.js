@@ -16,6 +16,12 @@ app.get("/api/quotes/random", (req, res, next) => {
   });
 });
 
+app.get("/api/quotes", (req, res, next) => {
+  res.json({
+    quotes,
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`the server is running on port ${PORT}`);
 });
