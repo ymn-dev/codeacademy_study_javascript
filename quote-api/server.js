@@ -34,6 +34,24 @@ app.post("/api/quotes", (req, res, next) => {
   }
 });
 
+app.put("/api/quotes/:id", (req, res, next) => {
+  const id = req.params.id;
+  if (quotes[id - 1]) {
+    const { quote, person } = req.body;
+    if (!quote || !person) {
+      res.status(404).send("not a valid request");
+    } else {
+      const newQuote = { id: quotes.length + 1, quote, person };
+      quotes.push(newQuote);
+      res.send({
+        quote: newQuote,
+      });
+    }
+  } else {
+    res.status(404).send("quote not found");
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`the server is running on port ${PORT}`);
 });
