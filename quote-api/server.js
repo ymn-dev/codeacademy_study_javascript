@@ -22,6 +22,19 @@ app.get("/api/quotes", (req, res, next) => {
   });
 });
 
+app.post("/api/quotes", (req, res, next) => {
+  const { quote, person } = req.query;
+  if (!quote || !person) {
+    res.status(404).send("not a valid request");
+  } else {
+    const newQuote = { quote, person };
+    quotes.push(newQuote);
+    res.send({
+      quote: newQuote,
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`the server is running on port ${PORT}`);
 });
