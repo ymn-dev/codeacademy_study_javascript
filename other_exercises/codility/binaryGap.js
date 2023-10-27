@@ -47,7 +47,17 @@ const numToBinary = (num) => {
   while (num > 0) {
     const remainder = num % 2;
     binaryString = remainder + binaryString;
-    num = Math.floor(num / 2);
+    num = Math.floor(num / 2); //next number will have twice value
   }
   return binaryString;
+};
+
+const binaryToNum = (binaryStr) => {
+  let num = 0;
+  let power = 0;
+  for (let i = binaryStr.length - 1; i >= 0; i--) {
+    num += binaryStr[i] * 2 ** power;
+    power++;
+  }
+  return num;
 };
