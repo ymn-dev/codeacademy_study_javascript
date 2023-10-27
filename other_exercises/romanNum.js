@@ -7,8 +7,9 @@ IV IX XL XC MCDXLIX
 
 const romanToNum = (str) => {
   let num = 0;
-  for (let i = 0; i < str.length - 1; i++) {
-    let pointer2 = i + 1;
+  for (let i = 0; i < str.length; i++) {
+    let pointer2 = i;
+    if (i + 1 < str.length) pointer2 = i + 1;
     let index = symbol.indexOf(str[i] + str[pointer2]);
     if (index > -1) {
       num += value[index];
