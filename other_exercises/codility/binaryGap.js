@@ -39,15 +39,21 @@ function solution(N) {
   return maxValidCounter;
 }
 
-const numToBinary = (num) => {
+const numToBinary = (num, base = 2) => {
   if (num === 0) {
-    return 0;
+    return "0";
   }
   let binaryString = "";
+  /*
+  in any base (<=10 else will need a value table), not just binary we will look at it digit by digit
+  sample like 1234567, its easier to just get the last value using %
+  1. we get that last value in the <base number> you want to convert <% base> and store it
+  2. we then completely remove the last digit from calculation <floored /base> then repeat 1.
+  */
   while (num > 0) {
-    const remainder = num % 2;
+    const remainder = num % base;
     binaryString = remainder + binaryString;
-    num = Math.floor(num / 2); //next number will have twice value
+    num = Math.floor(num / base);
   }
   return binaryString;
 };
