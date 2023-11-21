@@ -1,3 +1,4 @@
+//https://app.codility.com/programmers/lessons/5-prefix_sums/
 // you can write to stdout for debugging purposes, e.g.
 // console.log('this is a debug message');
 
