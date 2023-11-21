@@ -1,0 +1,21 @@
+//https://app.codility.com/programmers/lessons/6-sorting/
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+function NumberOfDiscIntersections(A: number[]): number {
+  // Implement your solution here
+  let intersection = 0;
+  const maxRadiusPosition = Array(A.length);
+  for (let i = 0; i < A.length; i++) {
+    const radius = A[i];
+    const startingPoint = i - radius < 0 ? 0 : i - radius;
+    const endPoint = i + radius > A.length - 1 ? A.length - 1 : i + radius;
+    if (i > 0) {
+      for (let j = 0; j < i; j++) {
+        if (maxRadiusPosition[j] >= startingPoint) intersection++;
+      }
+    }
+    maxRadiusPosition[i] = endPoint;
+  }
+  return intersection;
+}
